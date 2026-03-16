@@ -1,6 +1,6 @@
 """AWTRIX3 HTTP client for Ulanzi clock."""
 
-from typing import Any, Optional
+from typing import Any
 
 import httpx
 
@@ -16,7 +16,7 @@ class AwtrixClient:
         self.timeout = timeout
 
         # Setup auth if provided
-        auth: Optional[tuple[str, str]] = None
+        auth: tuple[str, str] | None = None
         if settings.username and settings.password:
             auth = (settings.username, settings.password)
 
@@ -36,7 +36,7 @@ class AwtrixClient:
         response.raise_for_status()
         return response.json()
 
-    async def post(self, endpoint: str, data: Optional[dict[str, Any]] = None) -> dict[str, Any]:
+    async def post(self, endpoint: str, data: dict[str, Any] | None = None) -> dict[str, Any]:
         """Make POST request to API."""
         response = await self.client.post(f"/api/{endpoint}", json=data)
         response.raise_for_status()
@@ -98,9 +98,9 @@ class AwtrixClient:
         self,
         text: str,
         duration: int = 5,
-        color: Optional[str] = None,
-        icon: Optional[str] = None,
-        sound: Optional[str] = None,
+        color: str | None = None,
+        icon: str | None = None,
+        sound: str | None = None,
         hold: bool = False,
         wakeup: bool = False,
         stack: bool = True,
@@ -126,14 +126,14 @@ class AwtrixClient:
     async def show_custom_app(
         self,
         app_name: str,
-        text: Optional[str] = None,
+        text: str | None = None,
         duration: int = 5,
         repeat: int = -1,
-        color: Optional[str] = None,
-        background: Optional[str] = None,
-        icon: Optional[str] = None,
+        color: str | None = None,
+        background: str | None = None,
+        icon: str | None = None,
         rainbow: bool = False,
-        effect: Optional[str] = None,
+        effect: str | None = None,
         save: bool = False,
     ) -> dict[str, Any]:
         """Create or update a custom app."""
@@ -173,8 +173,8 @@ class AwtrixClient:
     async def set_moodlight(
         self,
         brightness: int = 170,
-        color: Optional[str] = None,
-        kelvin: Optional[int] = None,
+        color: str | None = None,
+        kelvin: int | None = None,
     ) -> dict[str, Any]:
         """Set mood lighting."""
         data: dict[str, Any] = {"brightness": brightness}
@@ -190,8 +190,8 @@ class AwtrixClient:
         self,
         indicator_id: int,
         color: str,
-        blink: Optional[int] = None,
-        fade: Optional[int] = None,
+        blink: int | None = None,
+        fade: int | None = None,
     ) -> dict[str, Any]:
         """Set a colored indicator (1-3)."""
         if indicator_id not in (1, 2, 3):

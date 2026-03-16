@@ -1,7 +1,6 @@
 """CLI interface for Ulanzi MCP."""
 
 import asyncio
-from typing import Optional
 
 import typer
 from rich import print as rprint
@@ -186,9 +185,9 @@ def prev(clock: int = 0):
 def notify(
     text: str,
     duration: int = 5,
-    color: Optional[str] = None,
-    icon: Optional[str] = None,
-    sound: Optional[str] = None,
+    color: str | None = None,
+    icon: str | None = None,
+    sound: str | None = None,
     hold: bool = False,
     wakeup: bool = False,
     clock: int = 0,
@@ -218,13 +217,13 @@ def notify(
 @app.command()
 def custom(
     app_name: str,
-    text: Optional[str] = None,
+    text: str | None = None,
     duration: int = 5,
-    color: Optional[str] = None,
-    background: Optional[str] = None,
-    icon: Optional[str] = None,
+    color: str | None = None,
+    background: str | None = None,
+    icon: str | None = None,
     rainbow: bool = False,
-    effect: Optional[str] = None,
+    effect: str | None = None,
     save: bool = False,
     clock: int = 0,
 ):
@@ -283,8 +282,8 @@ def dismiss(clock: int = 0):
 @app.command()
 def moodlight(
     brightness: int = 170,
-    color: Optional[str] = None,
-    kelvin: Optional[int] = None,
+    color: str | None = None,
+    kelvin: int | None = None,
     clock: int = 0,
 ):
     """Set mood lighting."""
@@ -309,8 +308,8 @@ def moodlight(
 def indicator(
     id: int = typer.Argument(..., min=1, max=3),
     color: str = "#FF0000",
-    blink: Optional[int] = None,
-    fade: Optional[int] = None,
+    blink: int | None = None,
+    fade: int | None = None,
     clock: int = 0,
 ):
     """Set a colored indicator (1-3)."""

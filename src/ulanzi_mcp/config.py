@@ -1,6 +1,5 @@
 """Configuration management for Ulanzi MCP."""
 
-from typing import Optional
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -23,8 +22,8 @@ class Settings(BaseSettings):
     )
 
     # Optional: Auth
-    username: Optional[str] = Field(default=None, description="HTTP auth username")
-    password: Optional[str] = Field(default=None, description="HTTP auth password")
+    username: str | None = Field(default=None, description="HTTP auth username")
+    password: str | None = Field(default=None, description="HTTP auth password")
 
     # Optional: API settings
     api_timeout: int = Field(default=10, description="HTTP request timeout (seconds)")

@@ -1,7 +1,6 @@
 """MCP server for Ulanzi TC001 Smart Pixel Clock."""
 
-import asyncio
-from typing import Any, Optional
+from typing import Any
 
 from mcp.server.fastmcp import FastMCP
 
@@ -13,7 +12,7 @@ from ulanzi_mcp.config import settings
 mcp = FastMCP("ulanzi-mcp")
 
 
-async def get_client_for_request(clock_index: Optional[int] = None) -> AwtrixClient:
+async def get_client_for_request(clock_index: int | None = None) -> AwtrixClient:
     """Get client for the specified clock index or default (0)."""
     index = clock_index if clock_index is not None else 0
     return get_client(index)
@@ -25,7 +24,7 @@ async def get_client_for_request(clock_index: Optional[int] = None) -> AwtrixCli
 
 
 @mcp.tool()
-async def get_clock_stats(clock_index: Optional[int] = None) -> dict[str, Any]:
+async def get_clock_stats(clock_index: int | None = None) -> dict[str, Any]:
     """
     Get device statistics from the clock.
 
@@ -42,7 +41,7 @@ async def get_clock_stats(clock_index: Optional[int] = None) -> dict[str, Any]:
 
 
 @mcp.tool()
-async def get_clock_settings(clock_index: Optional[int] = None) -> dict[str, Any]:
+async def get_clock_settings(clock_index: int | None = None) -> dict[str, Any]:
     """
     Get current clock settings.
 
@@ -59,7 +58,7 @@ async def get_clock_settings(clock_index: Optional[int] = None) -> dict[str, Any
 
 
 @mcp.tool()
-async def get_apps_in_loop(clock_index: Optional[int] = None) -> dict[str, Any]:
+async def get_apps_in_loop(clock_index: int | None = None) -> dict[str, Any]:
     """
     Get list of all apps in the display rotation loop.
 
@@ -76,7 +75,7 @@ async def get_apps_in_loop(clock_index: Optional[int] = None) -> dict[str, Any]:
 
 
 @mcp.tool()
-async def get_available_effects(clock_index: Optional[int] = None) -> dict[str, Any]:
+async def get_available_effects(clock_index: int | None = None) -> dict[str, Any]:
     """
     Get list of all available visual effects.
 
@@ -98,7 +97,7 @@ async def get_available_effects(clock_index: Optional[int] = None) -> dict[str, 
 
 
 @mcp.tool()
-async def set_power(power: bool, clock_index: Optional[int] = None) -> dict[str, Any]:
+async def set_power(power: bool, clock_index: int | None = None) -> dict[str, Any]:
     """
     Turn the matrix display on or off.
 
@@ -117,7 +116,7 @@ async def set_power(power: bool, clock_index: Optional[int] = None) -> dict[str,
 
 
 @mcp.tool()
-async def set_brightness(brightness: int, clock_index: Optional[int] = None) -> dict[str, Any]:
+async def set_brightness(brightness: int, clock_index: int | None = None) -> dict[str, Any]:
     """
     Set the matrix brightness.
 
@@ -139,7 +138,7 @@ async def set_brightness(brightness: int, clock_index: Optional[int] = None) -> 
 
 
 @mcp.tool()
-async def set_sleep(seconds: int, clock_index: Optional[int] = None) -> dict[str, Any]:
+async def set_sleep(seconds: int, clock_index: int | None = None) -> dict[str, Any]:
     """
     Send the clock to deep sleep mode.
 
@@ -157,7 +156,7 @@ async def set_sleep(seconds: int, clock_index: Optional[int] = None) -> dict[str
 
 
 @mcp.tool()
-async def reboot_clock(clock_index: Optional[int] = None) -> dict[str, Any]:
+async def reboot_clock(clock_index: int | None = None) -> dict[str, Any]:
     """
     Reboot the clock.
 
@@ -177,7 +176,7 @@ async def reboot_clock(clock_index: Optional[int] = None) -> dict[str, Any]:
 
 
 @mcp.tool()
-async def switch_to_app(app_name: str, clock_index: Optional[int] = None) -> dict[str, Any]:
+async def switch_to_app(app_name: str, clock_index: int | None = None) -> dict[str, Any]:
     """
     Switch to a specific app.
 
@@ -193,7 +192,7 @@ async def switch_to_app(app_name: str, clock_index: Optional[int] = None) -> dic
 
 
 @mcp.tool()
-async def next_app(clock_index: Optional[int] = None) -> dict[str, Any]:
+async def next_app(clock_index: int | None = None) -> dict[str, Any]:
     """
     Switch to the next app in the display loop.
 
@@ -208,7 +207,7 @@ async def next_app(clock_index: Optional[int] = None) -> dict[str, Any]:
 
 
 @mcp.tool()
-async def previous_app(clock_index: Optional[int] = None) -> dict[str, Any]:
+async def previous_app(clock_index: int | None = None) -> dict[str, Any]:
     """
     Switch to the previous app in the display loop.
 
@@ -231,13 +230,13 @@ async def previous_app(clock_index: Optional[int] = None) -> dict[str, Any]:
 async def show_notification(
     text: str,
     duration: int = 5,
-    color: Optional[str] = None,
-    icon: Optional[str] = None,
-    sound: Optional[str] = None,
+    color: str | None = None,
+    icon: str | None = None,
+    sound: str | None = None,
     hold: bool = False,
     wakeup: bool = False,
     stack: bool = True,
-    clock_index: Optional[int] = None,
+    clock_index: int | None = None,
 ) -> dict[str, Any]:
     """
     Display a notification on the clock.
@@ -272,16 +271,16 @@ async def show_notification(
 @mcp.tool()
 async def show_custom_app(
     app_name: str,
-    text: Optional[str] = None,
+    text: str | None = None,
     duration: int = 5,
     repeat: int = -1,
-    color: Optional[str] = None,
-    background: Optional[str] = None,
-    icon: Optional[str] = None,
+    color: str | None = None,
+    background: str | None = None,
+    icon: str | None = None,
     rainbow: bool = False,
-    effect: Optional[str] = None,
+    effect: str | None = None,
     save: bool = False,
-    clock_index: Optional[int] = None,
+    clock_index: int | None = None,
 ) -> dict[str, Any]:
     """
     Create or update a custom app on the clock.
@@ -318,7 +317,7 @@ async def show_custom_app(
 
 
 @mcp.tool()
-async def delete_custom_app(app_name: str, clock_index: Optional[int] = None) -> dict[str, Any]:
+async def delete_custom_app(app_name: str, clock_index: int | None = None) -> dict[str, Any]:
     """
     Delete a custom app from the clock.
 
@@ -334,7 +333,7 @@ async def delete_custom_app(app_name: str, clock_index: Optional[int] = None) ->
 
 
 @mcp.tool()
-async def dismiss_notification(clock_index: Optional[int] = None) -> dict[str, Any]:
+async def dismiss_notification(clock_index: int | None = None) -> dict[str, Any]:
     """
     Dismiss a held notification.
 
@@ -356,9 +355,9 @@ async def dismiss_notification(clock_index: Optional[int] = None) -> dict[str, A
 @mcp.tool()
 async def set_moodlight(
     brightness: int = 170,
-    color: Optional[str] = None,
-    kelvin: Optional[int] = None,
-    clock_index: Optional[int] = None,
+    color: str | None = None,
+    kelvin: int | None = None,
+    clock_index: int | None = None,
 ) -> dict[str, Any]:
     """
     Set mood lighting on the clock.
@@ -383,9 +382,9 @@ async def set_moodlight(
 async def set_indicator(
     indicator_id: int,
     color: str,
-    blink: Optional[int] = None,
-    fade: Optional[int] = None,
-    clock_index: Optional[int] = None,
+    blink: int | None = None,
+    fade: int | None = None,
+    clock_index: int | None = None,
 ) -> dict[str, Any]:
     """
     Set a colored indicator on the clock.
@@ -418,7 +417,7 @@ async def set_indicator(
 
 
 @mcp.tool()
-async def clear_indicators(clock_index: Optional[int] = None) -> dict[str, Any]:
+async def clear_indicators(clock_index: int | None = None) -> dict[str, Any]:
     """
     Clear all indicators from the clock.
 
@@ -438,7 +437,7 @@ async def clear_indicators(clock_index: Optional[int] = None) -> dict[str, Any]:
 
 
 @mcp.tool()
-async def play_sound(sound: str, clock_index: Optional[int] = None) -> dict[str, Any]:
+async def play_sound(sound: str, clock_index: int | None = None) -> dict[str, Any]:
     """
     Play a RTTTL melody from the MELODIES folder.
 
@@ -454,7 +453,7 @@ async def play_sound(sound: str, clock_index: Optional[int] = None) -> dict[str,
 
 
 @mcp.tool()
-async def play_rtttl(rtttl: str, clock_index: Optional[int] = None) -> dict[str, Any]:
+async def play_rtttl(rtttl: str, clock_index: int | None = None) -> dict[str, Any]:
     """
     Play a RTTTL melody string directly.
 
@@ -478,7 +477,7 @@ def main():
     """Run the MCP server."""
     # Print configuration info
     hosts = settings.get_hosts_list()
-    print(f"Starting Ulanzi MCP Server...")
+    print("Starting Ulanzi MCP Server...")
     print(f"  Hosts: {hosts}")
     print(f"  MQTT Prefix: {settings.mqtt_prefix}")
     print(f"  Timeout: {settings.api_timeout}s")
