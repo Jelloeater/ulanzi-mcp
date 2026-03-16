@@ -131,7 +131,7 @@ All MCP tools have corresponding CLI commands:
 # Status
 ulanzi stats                    # Get device statistics
 ulanzi settings-cmd             # Get current settings
-ulanzi apps                     # List apps in loop
+ulanzi list-apps                  # List apps in loop
 ulanzi effects                  # List available effects
 
 # Power & Display

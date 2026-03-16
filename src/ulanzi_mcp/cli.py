@@ -53,14 +53,14 @@ def settings_cmd(clock: int = 0):
 
 
 @app.command()
-def apps(clock: int = 0):
+def list_apps(clock: int = 0):
     """List apps in the display loop."""
     client = get_client(clock)
     try:
         result = asyncio.run(client.get_apps_in_loop())
         console.print("[bold]Apps in Loop:[/bold]")
-        for app in result:
-            console.print(f"  - {app}")
+        for app_name in result:
+            console.print(f"  - {app_name}")
     except Exception as e:
         rprint(f"[red]Error:[/red] {e}")
         raise typer.Exit(1)

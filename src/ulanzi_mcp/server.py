@@ -12,19 +12,10 @@ from ulanzi_mcp.config import settings
 # Create FastMCP server instance
 mcp = FastMCP("ulanzi-mcp")
 
-# Context for clock index (can be overridden per request)
-_clock_index: int = 0
-
-
-def set_clock_index(index: int) -> None:
-    """Set the default clock index for tools."""
-    global _clock_index
-    _clock_index = index
-
 
 async def get_client_for_request(clock_index: Optional[int] = None) -> AwtrixClient:
-    """Get client for the specified clock index or default."""
-    index = clock_index if clock_index is not None else _clock_index
+    """Get client for the specified clock index or default (0)."""
+    index = clock_index if clock_index is not None else 0
     return get_client(index)
 
 
