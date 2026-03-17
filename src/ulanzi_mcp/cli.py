@@ -14,15 +14,15 @@ app = typer.Typer(
     help="""Ulanzi TC001 Smart Pixel Clock CLI
 
 Environment Variables:
-  ULANZI_HOSTS        Clock address(es), comma-separated (required)
-                      Example: http://192.168.1.100 or http://192.168.1.100,http://192.168.1.101
+  ULANZI_HOSTS        Clock address(es), comma-separated (IP or hostname, no http:// needed)
+                      Example: 192.168.1.100 or 192.168.1.100,192.168.1.101
   ULANZI_USERNAME     HTTP auth username (optional)
   ULANZI_PASSWORD     HTTP auth password (optional)
   ULANZI_API_TIMEOUT  HTTP request timeout in seconds (default: 10)
   ULANZI_MQTT_PREFIX  MQTT topic prefix (default: awtrix)
 
 Example:
-  export ULANZI_HOSTS=http://192.168.1.100
+  export ULANZI_HOSTS=192.168.1.100
   export ULANZI_USERNAME=user
   export ULANZI_PASSWORD=secret
   ulanzi-mcp stats

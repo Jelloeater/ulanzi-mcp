@@ -1,6 +1,5 @@
 """Configuration management for Ulanzi MCP."""
 
-
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -17,8 +16,8 @@ class Settings(BaseSettings):
 
     # Required
     hosts: str = Field(
-        default="http://192.168.1.100",
-        description="One or more clock addresses (comma-separated)",
+        default="192.168.1.100",
+        description="One or more clock addresses (comma-separated, no http:// needed)",
     )
 
     # Optional: Auth
@@ -30,8 +29,15 @@ class Settings(BaseSettings):
     mqtt_prefix: str = Field(default="awtrix", description="MQTT topic prefix")
 
     def get_hosts_list(self) -> list[str]:
-        """Parse hosts string into a list of addresses."""
-        return [h.strip() for h in self.hosts.split(",") if h.strip()]
+        """Parse hosts string into a list of addresses (with http:// prefix)."""
+        result = []
+        for h in self.hosts.split(","):
+            h = h.strip()
+            if h:
+                if not h.startswith("http://") and not h.startswith("https://"):
+                    h = f"http://{h}"
+                result.append(h)
+        return result
 
     def get_host(self, index: int = 0) -> str:
         """Get host by index."""
