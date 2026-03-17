@@ -32,21 +32,34 @@ class AwtrixClient:
 
     async def get(self, endpoint: str) -> dict[str, Any]:
         """Make GET request to API."""
-        response = await self.client.get(f"/api/{endpoint}")
-        response.raise_for_status()
-        # Some endpoints return empty body on success
-        if response.text:
-            return response.json()
-        return {}
+        try:
+            response = await self.client.get(f"/api/{endpoint}")
+            response.raise_for_status()
+            text = response.text.strip() if response.text else ""
+            if not text:
+                return {}
+            try:
+                return response.json()
+            except Exception:
+                return {"response": text}
+        except Exception as e:
+            raise Exception(f"API error on {endpoint}: {e}") from e
 
     async def post(self, endpoint: str, data: dict[str, Any] | None = None) -> dict[str, Any]:
         """Make POST request to API."""
-        response = await self.client.post(f"/api/{endpoint}", json=data)
-        response.raise_for_status()
-        # Some endpoints return empty body on success
-        if response.text:
-            return response.json()
-        return {"success": True}
+        try:
+            response = await self.client.post(f"/api/{endpoint}", json=data)
+            response.raise_for_status()
+            text = response.text.strip() if response.text else ""
+            if not text:
+                return {"success": True}
+            try:
+                return response.json()
+            except Exception:
+                # Return text as dict if not JSON
+                return {"response": text}
+        except Exception as e:
+            raise Exception(f"API error on {endpoint}: {e}") from e
 
     # === Status & Info ===
 
