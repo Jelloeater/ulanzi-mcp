@@ -10,7 +10,24 @@ from rich.table import Table
 from .client import get_client
 from .config import settings
 
-app = typer.Typer(help="Ulanzi TC001 Smart Pixel Clock CLI")
+app = typer.Typer(
+    help="""Ulanzi TC001 Smart Pixel Clock CLI
+
+Environment Variables:
+  ULANZI_HOSTS        Clock address(es), comma-separated (required)
+                      Example: http://192.168.1.100 or http://192.168.1.100,http://192.168.1.101
+  ULANZI_USERNAME     HTTP auth username (optional)
+  ULANZI_PASSWORD     HTTP auth password (optional)
+  ULANZI_API_TIMEOUT  HTTP request timeout in seconds (default: 10)
+  ULANZI_MQTT_PREFIX  MQTT topic prefix (default: awtrix)
+
+Example:
+  export ULANZI_HOSTS=http://192.168.1.100
+  export ULANZI_USERNAME=user
+  export ULANZI_PASSWORD=secret
+  ulanzi-mcp stats
+"""
+)
 console = Console()
 
 
@@ -388,6 +405,22 @@ def info():
     table.add_row("Auth", "Yes" if settings.username else "No")
 
     console.print(table)
+
+    # Also show env var reference
+    env_table = Table(title="Environment Variables")
+    env_table.add_column("Variable", style="cyan")
+    env_table.add_column("Description", style="white")
+    env_table.add_column("Current", style="yellow")
+
+    env_table.add_row("ULANZI_HOSTS", "Clock address(es)", settings.hosts)
+    env_table.add_row("ULANZI_USERNAME", "HTTP auth user", settings.username or "(not set)")
+    env_table.add_row(
+        "ULANZI_PASSWORD", "HTTP auth pass", "***" if settings.password else "(not set)"
+    )
+    env_table.add_row("ULANZI_API_TIMEOUT", "Request timeout", str(settings.api_timeout))
+    env_table.add_row("ULANZI_MQTT_PREFIX", "MQTT prefix", settings.mqtt_prefix)
+
+    console.print(env_table)
 
 
 def main():
