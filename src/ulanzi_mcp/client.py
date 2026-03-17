@@ -34,13 +34,19 @@ class AwtrixClient:
         """Make GET request to API."""
         response = await self.client.get(f"/api/{endpoint}")
         response.raise_for_status()
-        return response.json()
+        # Some endpoints return empty body on success
+        if response.text:
+            return response.json()
+        return {}
 
     async def post(self, endpoint: str, data: dict[str, Any] | None = None) -> dict[str, Any]:
         """Make POST request to API."""
         response = await self.client.post(f"/api/{endpoint}", json=data)
         response.raise_for_status()
-        return response.json()
+        # Some endpoints return empty body on success
+        if response.text:
+            return response.json()
+        return {"success": True}
 
     # === Status & Info ===
 
