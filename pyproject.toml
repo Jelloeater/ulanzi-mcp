@@ -35,7 +35,7 @@ dev = [
 ]
 
 [project.scripts]
-ulanzi = "ulanzi_mcp.cli:main"
+ulanzi-mcp = "ulanzi_mcp.cli:main"
 
 [build-system]
 requires = ["hatchling"]
