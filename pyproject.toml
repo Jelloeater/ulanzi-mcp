@@ -26,6 +26,11 @@ dependencies = [
     "rich>=13.0.0",
 ]
 
+[project.urls]
+Homepage = "https://github.com/Jelloeater/ulanzi-mcp"
+Repository = "https://github.com/Jelloeater/ulanzi-mcp"
+Issues = "https://github.com/Jelloeater/ulanzi-mcp/issues"
+
 [project.optional-dependencies]
 dev = [
     "pytest>=8.0.0",
@@ -36,6 +41,7 @@ dev = [
 
 [project.scripts]
 ulanzi-mcp = "ulanzi_mcp.cli:main"
+ulanzi = "ulanzi_mcp.cli:main"
 
 [build-system]
 requires = ["hatchling"]
