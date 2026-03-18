@@ -1,5 +1,14 @@
 # Ulanzi MCP Server
 
+[![Test](https://github.com/Jelloeater/ulanzi-mcp/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/Jelloeater/ulanzi-mcp/actions/workflows/test.yml)
+[![CodeQL](https://github.com/Jelloeater/ulanzi-mcp/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/Jelloeater/ulanzi-mcp/actions/workflows/codeql.yml)
+[![Libraries.io dependency status for latest release](https://img.shields.io/librariesio/release/pypi/ulanzi-mcp)](https://libraries.io/pypi/ulanzi-mcp)
+
+[![ulanzi-mcp](https://snyk.io/advisor/python/ulanzi-mcp/badge.svg)](https://snyk.io/advisor/python/ulanzi-mcp)
+![PyPI - Status](https://img.shields.io/pypi/status/ulanzi-mcp)
+[![PyPI](https://img.shields.io/pypi/v/ulanzi-mcp)](https://pypi.org/project/ulanzi-mcp/)
+[![GitHub](https://img.shields.io/github/license/jelloeater/ulanzi-mcp)](https://github.com/Jelloeater/ulanzi-mcp/blob/main/LICENSE)
+
 MCP server and CLI for the Ulanzi TC001 Smart Pixel Clock (AWTRIX3 firmware).
 
 ## Features
