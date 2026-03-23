@@ -469,6 +469,397 @@ async def play_rtttl(rtttl: str, clock_index: int | None = None) -> dict[str, An
 
 
 # =============================================================================
+# Resources (Ingest)
+# =============================================================================
+
+
+@mcp.resource("ulanzi://stats")
+async def stats_resource() -> str:
+    """
+    Provides device statistics as a readable resource.
+
+    Returns battery level, RAM usage, uptime, and other device info.
+    This resource can be read by agents to quickly check clock status.
+    """
+    import json
+
+    client = await get_client_for_request(None)
+    try:
+        data = await client.get_stats()
+        return json.dumps(data, indent=2)
+    finally:
+        await client.close()
+
+
+@mcp.resource("ulanzi://settings")
+async def settings_resource() -> str:
+    """
+    Provides current clock settings as a readable resource.
+
+    Returns display settings like brightness, colors, time format, etc.
+    """
+    import json
+
+    client = await get_client_for_request(None)
+    try:
+        data = await client.get_settings()
+        return json.dumps(data, indent=2)
+    finally:
+        await client.close()
+
+
+@mcp.resource("ulanzi://apps")
+async def apps_resource() -> str:
+    """
+    Provides list of all apps in the display rotation loop.
+
+    Returns the names of all apps that cycle through on the display.
+    """
+    import json
+
+    client = await get_client_for_request(None)
+    try:
+        data = await client.get_apps_in_loop()
+        return json.dumps(data, indent=2)
+    finally:
+        await client.close()
+
+
+@mcp.resource("ulanzi://effects")
+async def effects_resource() -> str:
+    """
+    Provides list of all available visual effects.
+
+    Returns available background effects that can be used with custom apps.
+    """
+    import json
+
+    client = await get_client_for_request(None)
+    try:
+        data = await client.get_effects()
+        return json.dumps(data, indent=2)
+    finally:
+        await client.close()
+
+
+@mcp.resource("ulanzi://transitions")
+async def transitions_resource() -> str:
+    """
+    Provides list of all available transition effects.
+
+    Returns transitions for app switching animations.
+    """
+    import json
+
+    client = await get_client_for_request(None)
+    try:
+        data = await client.get_transitions()
+        return json.dumps(data, indent=2)
+    finally:
+        await client.close()
+
+
+# =============================================================================
+# Prompts (Inject)
+# =============================================================================
+
+
+@mcp.prompt()
+def notify_urgent(text: str, reason: str) -> str:
+    """
+    Creates a prompt for urgent notifications that demand immediate attention.
+
+    Use this when the clock needs to display critical alerts with sound.
+
+    Args:
+        text: The urgent message to display
+        reason: Why this is urgent (e.g., "Fire alarm", "Security breach", "Medical alert")
+
+    Returns:
+        A prompt instructing how to display the urgent notification
+    """
+    return f"""Display an urgent notification on the Ulanzi clock:
+
+1. First, wake up the clock if it's off using show_notification with wakeup=True
+2. Show the notification:
+   - text: "{text}"
+   - hold: True (keep showing until dismissed)
+   - wakeup: True
+   - color: "#FF0000" (red for urgency)
+   - duration: 10 seconds or more
+3. Play an alert sound using play_sound with a suitable alert tone
+
+The reason for this urgent notification: {reason}"""
+
+
+@mcp.prompt()
+def notify_meeting(meeting_name: str, minutes_until: int) -> str:
+    """
+    Creates a prompt for meeting reminder notifications.
+
+    Use this to remind users about upcoming meetings with a polite chime.
+
+    Args:
+        meeting_name: Name of the meeting
+        minutes_until: Minutes until the meeting starts
+
+    Returns:
+        A prompt instructing how to display the meeting reminder
+    """
+    if minutes_until <= 5:
+        urgency = "starting NOW"
+        color = "#FF8800"
+    elif minutes_until <= 15:
+        urgency = f"in {minutes_until} minutes"
+        color = "#FFAA00"
+    else:
+        urgency = f"in {minutes_until} minutes"
+        color = "#00AAFF"
+
+    return f"""Display a meeting reminder on the Ulanzi clock:
+
+1. Show notification:
+   - text: "{meeting_name}"
+   - subtitle: "Starting {urgency}"
+   - duration: {min(10, minutes_until)} seconds
+   - color: "{color}" (blue for normal, orange for soon)
+   - wakeup: True
+2. Play a gentle chime sound using play_sound (avoid jarring tones)
+
+Meeting: {meeting_name}
+Time until meeting: {minutes_until} minutes"""
+
+
+@mcp.prompt()
+def notify_timer(label: str, duration_seconds: int) -> str:
+    """
+    Creates a prompt for timer countdown notifications.
+
+    Use this to set up countdown timers with visual feedback.
+
+    Args:
+        label: Description of what the timer is for
+        duration_seconds: Total duration in seconds
+
+    Returns:
+        A prompt instructing how to display the timer
+    """
+    minutes = duration_seconds // 60
+    seconds = duration_seconds % 60
+    time_str = f"{minutes}:{seconds:02d}" if minutes > 0 else f"{seconds}s"
+
+    return f"""Set up a timer countdown on the Ulanzi clock:
+
+1. Create a custom app for the timer:
+   - app_name: "timer_{label.lower().replace(" ", "_")}"
+   - text: "{label}\\n{time_str}"
+   - repeat: -1 (keep updating)
+   - color: "#00FF00" (green)
+   - duration: 5 seconds
+2. The timer should count down - update the display periodically
+
+Timer: {label}
+Duration: {duration_seconds} seconds ({time_str})"""
+
+
+@mcp.prompt()
+def victory_alert(custom_text: str | None = None) -> str:
+    """
+    Creates a victory celebration prompt with FF7-style jingle!
+
+    Use this when celebrating achievements, completed tasks, or wins.
+    Includes the classic FF7 victory theme melody.
+
+    Args:
+        custom_text: Optional text to display during celebration
+
+    Returns:
+        A prompt instructing how to play the victory celebration
+    """
+    # FF7 Victory Theme RTTTL melody
+    ff7_victory = "FF7VICT:d=4,o=5,b=180:32p,c6,4a#,c6,4a#,c6,4d#6,2f6,32p,f6,4d#6,c6,4a#,f6,4g#6,2a#6,32p,c6,4a#,c6,4a#,c6,4d#6,2f6,32p,f6,4d#6,c6,4a#,f6,4g#6,2c7,32p,c7,4c7,2c7"
+
+    text_display = (
+        f'\\n2. Show custom app "victory":\\n   - text: "{custom_text}"\\n   - color: "#FFD700" (gold)\\n   - rainbow: True'
+        if custom_text
+        else ""
+    )
+
+    return f"""Celebrate a victory on the Ulanzi clock with the classic FF7 victory jingle!
+
+1. Play the victory melody using play_rtttl with this RTTTL string:
+   {ff7_victory}{text_display}
+
+2. Optional: Set moodlight to gold/yellow for extra celebration
+
+Let the victory ring out! 🎉"""
+
+
+@mcp.prompt()
+def status_report(clock_index: int | None = None) -> str:
+    """
+    Creates a prompt for checking full clock status.
+
+    Use this when you need a comprehensive overview of clock state.
+
+    Args:
+        clock_index: Optional clock index to target (0-based)
+
+    Returns:
+        A prompt instructing how to gather all clock status information
+    """
+    index_note = f" (targeting clock index {clock_index})" if clock_index else ""
+
+    return f"""Gather comprehensive status from the Ulanzi clock{index_note}:
+
+1. Get device statistics using get_clock_stats:
+   - Battery level and charging status
+   - RAM usage
+   - Device uptime
+   - Current app being displayed
+
+2. Get current settings using get_clock_settings:
+   - Brightness level
+   - Time format (12h/24h)
+   - Auto-brightness status
+
+3. Get apps in loop using get_apps_in_loop:
+   - List all cycling apps
+   - Current position in rotation
+
+4. Report all findings in a clear summary for the user."""
+
+
+@mcp.prompt()
+def moodlight_scene(scene_name: str) -> str:
+    """
+    Creates a prompt for setting mood lighting scenes.
+
+    Use this to set predefined mood lighting ambiance.
+
+    Args:
+        scene_name: Scene preset - "calm" (blue), "energetic" (warm), "night" (dim red), "focus" (white)
+
+    Returns:
+        A prompt instructing how to set the mood lighting scene
+    """
+    scenes = {
+        "calm": {
+            "description": "Relaxing blue ambient lighting",
+            "color": "#4488FF",
+            "brightness": 100,
+            "kelvin": 4000,
+        },
+        "energetic": {
+            "description": "Warm, vibrant lighting",
+            "color": "#FF8844",
+            "brightness": 200,
+            "kelvin": 5000,
+        },
+        "night": {
+            "description": "Dim red for nighttime (won't disrupt sleep)",
+            "color": "#FF2200",
+            "brightness": 50,
+            "kelvin": 2000,
+        },
+        "focus": {
+            "description": "Bright white for concentration",
+            "color": "#FFFFFF",
+            "brightness": 180,
+            "kelvin": 5500,
+        },
+    }
+
+    if scene_name.lower() not in scenes:
+        available = ", ".join(scenes.keys())
+        return f"Unknown scene '{scene_name}'. Available scenes: {available}"
+
+    scene = scenes[scene_name.lower()]
+
+    return f"""Set mood lighting scene "{scene_name}" on the Ulanzi clock:
+
+Scene: {scene["description"]}
+
+1. Use set_moodlight with:
+   - brightness: {scene["brightness"]}
+   - color: "{scene["color"]}"
+   - kelvin: {scene["kelvin"]}
+
+2. For extra ambiance, show a custom app with the scene name
+
+Current scene: {scene_name}
+Brightness: {scene["brightness"]}/255
+Color temperature: {scene["kelvin"]}K"""
+
+
+@mcp.prompt()
+def visual_weather(condition: str, temperature: int | None = None) -> str:
+    """
+    Creates a prompt for displaying weather information on the clock.
+
+    Use this to show current weather conditions.
+
+    Args:
+        condition: Weather condition (sunny, cloudy, rainy, snowy, stormy, foggy)
+        temperature: Optional temperature in Celsius
+
+    Returns:
+        A prompt instructing how to display weather information
+    """
+    condition_colors = {
+        "sunny": "#FFDD00",
+        "cloudy": "#888899",
+        "rainy": "#4488FF",
+        "snowy": "#FFFFFF",
+        "stormy": "#666688",
+        "foggy": "#AABBCC",
+    }
+    condition_icons = {
+        "sunny": "sun",
+        "cloudy": "cloud",
+        "rainy": "rain",
+        "snowy": "snow",
+        "stormy": "storm",
+        "foggy": "fog",
+    }
+    condition_sounds = {
+        "sunny": "chime",
+        "cloudy": None,
+        "rainy": None,
+        "snowy": None,
+        "stormy": "thunder",
+        "foggy": None,
+    }
+
+    color = condition_colors.get(condition.lower(), "#FFFFFF")
+    icon = condition_icons.get(condition.lower(), "weather")
+    sound = condition_sounds.get(condition.lower())
+
+    temp_text = f"{temperature}°C" if temperature is not None else ""
+    display_text = f"{condition.upper()}" + (f" {temp_text}" if temp_text else "")
+
+    sound_line = f'\n2. Play ambient sound using play_sound("{sound}")' if sound else ""
+
+    return f"""Display weather information on the Ulanzi clock:
+
+1. Show custom app "weather":
+   - app_name: "weather"
+   - text: "{display_text}"
+   - color: "{color}"
+   - icon: "{icon}"
+   - rainbow: False
+   - duration: 10 seconds{sound_line}
+
+2. Optionally use an appropriate background effect:
+   - sunny: "sunrise"
+   - rainy: "rain"
+   - stormy: "lightning"
+   - snowy: "snow"
+
+Current weather: {condition}{f", {temperature}°C" if temperature else ""}"""
+
+
+# =============================================================================
 # Server Entry Point
 # =============================================================================
 
