@@ -134,3 +134,39 @@ class TestConfig:
         assert len(hosts) == 2
         assert hosts[0] == "http://192.168.1.100"
         assert hosts[1] == "http://192.168.1.101"
+
+
+class TestPublicAPI:
+    """Test the public importable API from ulanzi_mcp package."""
+
+    def test_import_awtrix_client(self):
+        """AwtrixClient is importable from the top-level package."""
+        from ulanzi_mcp import AwtrixClient
+        assert AwtrixClient is not None
+
+    def test_import_get_client(self):
+        """get_client is importable from the top-level package."""
+        from ulanzi_mcp import get_client
+        assert callable(get_client)
+
+    def test_import_settings(self):
+        """settings instance is importable from the top-level package."""
+        from ulanzi_mcp import settings
+        assert settings is not None
+
+    def test_import_settings_class(self):
+        """Settings class is importable from the top-level package."""
+        from ulanzi_mcp import Settings
+        assert Settings is not None
+
+    def test_import_version(self):
+        """__version__ is importable from the top-level package."""
+        from ulanzi_mcp import __version__
+        assert isinstance(__version__, str)
+        assert len(__version__) > 0
+
+    def test_all_exports(self):
+        """All expected symbols are listed in __all__."""
+        import ulanzi_mcp
+        for name in ["AwtrixClient", "get_client", "Settings", "settings", "__version__"]:
+            assert name in ulanzi_mcp.__all__, f"{name!r} missing from __all__"
