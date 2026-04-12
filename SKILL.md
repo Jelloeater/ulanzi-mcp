@@ -6,8 +6,28 @@ This file describes how to use `ulanzi-mcp` as a Python library, CLI tool, or MC
 
 ## Installation
 
+The package is split into modules with separate optional extras:
+
+| Extra | Installs | Use when |
+|-------|----------|----------|
+| *(none)* | Core library only | Using `AwtrixClient` in Python code |
+| `[mcp]` | + `mcp` | Running the MCP server |
+| `[cli]` | + `typer`, `rich` | Using the `ulanzi` CLI |
+| `[all]` | + all of the above | MCP server + CLI |
+| `[dev]` | + all + test tools | Development / contributing |
+
 ```bash
+# Core library only
 pip install ulanzi-mcp
+
+# MCP server
+pip install "ulanzi-mcp[mcp]"
+
+# CLI
+pip install "ulanzi-mcp[cli]"
+
+# Everything
+pip install "ulanzi-mcp[all]"
 ```
 
 ---
