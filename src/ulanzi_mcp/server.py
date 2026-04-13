@@ -2,7 +2,13 @@
 
 from typing import Any
 
-from mcp.server.fastmcp import FastMCP
+try:
+    from mcp.server.fastmcp import FastMCP
+except ImportError as e:
+    raise ImportError(
+        "MCP dependencies are not installed. "
+        "Install them with: pip install 'ulanzi-mcp[mcp]'"
+    ) from e
 
 # Import via absolute path for mcp dev compatibility
 from ulanzi_mcp.client import AwtrixClient, get_client

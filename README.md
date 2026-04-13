@@ -9,10 +9,11 @@
 [![PyPI](https://img.shields.io/pypi/v/ulanzi-mcp)](https://pypi.org/project/ulanzi-mcp/)
 [![GitHub](https://img.shields.io/github/license/jelloeater/ulanzi-mcp)](https://github.com/Jelloeater/ulanzi-mcp/blob/main/LICENSE)
 
-MCP server and CLI for the Ulanzi TC001 Smart Pixel Clock (AWTRIX3 firmware).
+MCP server, CLI, and Python library for the Ulanzi TC001 Smart Pixel Clock (AWTRIX3 firmware).
 
 ## Features
 
+- **Library**: Use `AwtrixClient` directly in your Python code — no MCP or CLI deps required
 - **MCP Server**: Control your Ulanzi clock from AI assistants (Claude Desktop, Cursor, Windsurf)
 - **CLI Tool**: Command-line interface for scripting and automation
 - **Multi-clock Support**: Control multiple clocks from a single instance
@@ -22,9 +23,25 @@ MCP server and CLI for the Ulanzi TC001 Smart Pixel Clock (AWTRIX3 firmware).
 
 ### 1. Install
 
+Choose the extras that match your use case:
+
 ```bash
-cd ulanzi-mcp
-uv sync
+# Core library only (AwtrixClient + config, minimal deps)
+pip install ulanzi-mcp
+
+# With MCP server support
+pip install "ulanzi-mcp[mcp]"
+
+# With CLI support
+pip install "ulanzi-mcp[cli]"
+
+# Everything (MCP + CLI)
+pip install "ulanzi-mcp[all]"
+```
+
+Or with `uv` (development):
+```bash
+uv sync --extra dev
 ```
 
 ### 2. Configure

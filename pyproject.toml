@@ -1,7 +1,7 @@
 [project]
 name = "ulanzi-mcp"
 version = "0.1.0"
-description = "MCP server and CLI for Ulanzi TC001 Smart Pixel Clock (AWTRIX3)"
+description = "Python library, MCP server, and CLI for Ulanzi TC001 Smart Pixel Clock (AWTRIX3)"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
@@ -18,12 +18,9 @@ classifiers = [
 ]
 
 dependencies = [
-    "mcp>=1.0.0",
     "httpx>=0.27.0",
     "pydantic>=2.0.0",
     "pydantic-settings>=2.0.0",
-    "typer>=0.12.0",
-    "rich>=13.0.0",
 ]
 
 [project.urls]
@@ -32,11 +29,27 @@ Repository = "https://github.com/Jelloeater/ulanzi-mcp"
 Issues = "https://github.com/Jelloeater/ulanzi-mcp/issues"
 
 [project.optional-dependencies]
+mcp = [
+    "mcp>=1.0.0",
+]
+cli = [
+    "typer>=0.12.0",
+    "rich>=13.0.0",
+]
+all = [
+    "mcp>=1.0.0",
+    "typer>=0.12.0",
+    "rich>=13.0.0",
+]
 dev = [
     "pytest>=8.0.0",
     "pytest-asyncio>=0.23.0",
     "pytest-cov>=4.0.0",
     "ruff>=0.4.0",
+    # include all extras for development
+    "mcp>=1.0.0",
+    "typer>=0.12.0",
+    "rich>=13.0.0",
 ]
 
 [project.scripts]

@@ -2,10 +2,16 @@
 
 import asyncio
 
-import typer
-from rich import print as rprint
-from rich.console import Console
-from rich.table import Table
+try:
+    import typer
+    from rich import print as rprint
+    from rich.console import Console
+    from rich.table import Table
+except ImportError as e:
+    raise ImportError(
+        "CLI dependencies are not installed. "
+        "Install them with: pip install 'ulanzi-mcp[cli]'"
+    ) from e
 
 from .client import get_client
 from .config import settings
